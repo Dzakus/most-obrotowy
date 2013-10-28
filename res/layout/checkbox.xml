@@ -9,6 +9,6 @@
         android:id="@+id/skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nie pokazuj ponownie" >
+        android:text="@string/dont_display_again" >
     </CheckBox>
 </LinearLayout>

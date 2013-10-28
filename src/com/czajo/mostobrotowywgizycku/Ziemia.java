@@ -2,74 +2,14 @@ package com.czajo.mostobrotowywgizycku;
 
 import java.util.Calendar;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class Ziemia extends myActivity {
 	
-	private TextView czas, stan, miesiac;
-
+	
 	public static final String PREFS_NAME = "MyPrefsFile1";
-    public CheckBox dontShowAgain;
-
-    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if(action.equals(Intent.ACTION_TIME_TICK)){
-				updateView();
-			}
-			
-		}
-    	
-    };
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-                        
-        czas = (TextView) findViewById(R.id.czas);
-        stan = (TextView) findViewById(R.id.stan);
-        
-        /*SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String activityname = settings.getString("activityName", "Wodna");
-        if (activityname.equals("Wodna"))
-        {
-        	Intent intent = new Intent(this, Wodna.class);
-            this.startActivity(intent);
-            finish();
-        }
-        if (activityname.equals("MainActivity"))
-        {
-        	Intent intent = new Intent(this, MainActivity.class);
-            this.startActivity(intent);
-            finish();
-        }*/
-            
-
-
-        //rozpoznawanie daty 
-        
-        //miesiac = (TextView) findViewById(R.id.miesiac);        
-        //miesiac.setText(String.valueOf(day));
-        updateView();
-    }
 
 	public void updateView(){
     	Calendar c = Calendar.getInstance(); 
@@ -266,71 +206,16 @@ public class MainActivity extends Activity {
         
         //koniec rozpoznawania daty
     }
-    //pokazywanie alertboxa przy pierwszym uruchomieniu aplikacji
-    @Override
-    protected void onResume() {
-    	IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
-    	registerReceiver(mBroadcastReceiver, filter);
-    	
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        LayoutInflater adbInflater = LayoutInflater.from(this);
-        View eulaLayout = adbInflater.inflate(R.layout.checkbox, null);
-        dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.skip);
-        adb.setView(eulaLayout);
-        adb.setTitle("UWAGA!!!");
-        adb.setMessage(Html.fromHtml("Ta aplikacja zawiera równie¿ tryb wodny. Aktywowaæ go mo¿na poprzez klawisz 'menu'. W trybie wodnym mo¿na równie¿ szybko zadzwoniæ do gi¿yckiej bazy MOPR! Aplikacja dzia³a statycznie na podstawie godzin, wiêc nie odpowiadam za dró¿nika. Maciej Czajkowski"));
-        adb.setPositiveButton("OK, rozumiem", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
-                if (dontShowAgain.isChecked())
-                    checkBoxResult = "checked";
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.commit();              
-                return;
-            }
-        });
 
-
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String skipMessage = settings.getString("skipMessage", "NOT checked");
-        if (!skipMessage.equals("checked"))
-            adb.show();
-
-        super.onResume();
-    }
-  //koniec kodu alertboxa
-    @Override
-	protected void onPause() {
-		super.onPause();
-		
-		unregisterReceiver(mBroadcastReceiver);
-	}
-    
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    
-    //prze³¹czanie Activity 
+	//prze³¹czanie Activity 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-        case R.id.item1:
-            Intent intent = new Intent(this, Wodna.class);
-            this.startActivity(intent);
-            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("activityName", "Wodna");
-            editor.commit();
+        case R.id.change:
+            mPref.edit().putInt(PREF_LAYOUT,LAYOUT_WODA).commit();
+        	Intent intent = new Intent(this, Wodna.class);
+            startActivity(intent);
             finish();
-            break;
-        case R.id.item2:
-            Intent about = new Intent(this, About.class);
-            this.startActivity(about);
             break;
 
         default:
