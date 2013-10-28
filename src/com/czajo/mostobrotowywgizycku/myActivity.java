@@ -33,8 +33,6 @@ public abstract class myActivity extends Activity {
 	public static final int LAYOUT_WODA = 1;
 	public static final int LAYOUT_ZIEMIA = 2;
 
-
-
 	protected SharedPreferences mPref;
 
 	protected TextView czas, stan, miesiac;
