@@ -1,14 +1,15 @@
 package com.czajo.mostobrotowywgizycku;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.text.Html;
@@ -16,22 +17,28 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
 	private TextView czas, stan, miesiac;
-	Calendar c = Calendar.getInstance(); 
-	int min = c.get(Calendar.MINUTE);
-	int hours = c.get(Calendar.HOUR_OF_DAY);
-	int day = c.get(Calendar.DAY_OF_YEAR) ;
-	int wynik = (hours * 60 ) + min;
-	int minuty;
+
 	public static final String PREFS_NAME = "MyPrefsFile1";
     public CheckBox dontShowAgain;
 
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if(action.equals(Intent.ACTION_TIME_TICK)){
+				updateView();
+			}
+			
+		}
+    	
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,16 @@ public class MainActivity extends Activity {
         
         //miesiac = (TextView) findViewById(R.id.miesiac);        
         //miesiac.setText(String.valueOf(day));
+        updateView();
+    }
+
+	public void updateView(){
+    	Calendar c = Calendar.getInstance(); 
+    	int min = c.get(Calendar.MINUTE);
+    	int hours = c.get(Calendar.HOUR_OF_DAY);
+    	int day = c.get(Calendar.DAY_OF_YEAR) ;
+    	int wynik = (hours * 60 ) + min;
+    	int minuty;
         if ((day >= 118 && day <= 126) || (day >= 152 && day <= 259))
         {
         	//MOST OTWARTY DLA RUCHU KO£OWEGO
@@ -252,6 +269,9 @@ public class MainActivity extends Activity {
     //pokazywanie alertboxa przy pierwszym uruchomieniu aplikacji
     @Override
     protected void onResume() {
+    	IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
+    	registerReceiver(mBroadcastReceiver, filter);
+    	
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         LayoutInflater adbInflater = LayoutInflater.from(this);
         View eulaLayout = adbInflater.inflate(R.layout.checkbox, null);
@@ -280,7 +300,13 @@ public class MainActivity extends Activity {
         super.onResume();
     }
   //koniec kodu alertboxa
-
+    @Override
+	protected void onPause() {
+		super.onPause();
+		
+		unregisterReceiver(mBroadcastReceiver);
+	}
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -299,6 +325,7 @@ public class MainActivity extends Activity {
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("activityName", "Wodna");
+            editor.commit();
             finish();
             break;
         case R.id.item2:

@@ -1,18 +1,10 @@
 package com.czajo.mostobrotowywgizycku;
 
-import java.util.regex.Pattern;
-
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.text.method.ScrollingMovementMethod;
-import android.text.util.Linkify;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 public class About extends Activity{
@@ -35,8 +27,6 @@ public class About extends Activity{
 		getMenuInflater().inflate(R.menu.about, menu);
 		return true;
 	}
-	
-
 
 }
 

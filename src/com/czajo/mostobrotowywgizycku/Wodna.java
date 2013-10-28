@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,14 +19,18 @@ import android.widget.TextView;
 public class Wodna extends Activity {
 	
 	private TextView czas, stan, miesiac;
-	Calendar c = Calendar.getInstance(); 
-	int min = c.get(Calendar.MINUTE);
-	int hours = c.get(Calendar.HOUR_OF_DAY);
-	int day = c.get(Calendar.DAY_OF_YEAR) ;
-	int wynik = (hours * 60 ) + min;
-	int minuty;
-	public static final String PREFS_NAME = "MyPrefsFile1";
 
+	public static final String PREFS_NAME = "MyPrefsFile1";
+	BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(Intent.ACTION_TIME_TICK)) {
+				updateView();
+			}
+		}
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,6 +58,16 @@ public class Wodna extends Activity {
         
         //miesiac = (TextView) findViewById(R.id.miesiac);        
         //miesiac.setText(String.valueOf(day));
+        updateView();
+	}
+	
+	public void updateView(){
+		Calendar c = Calendar.getInstance(); 
+		int min = c.get(Calendar.MINUTE);
+		int hours = c.get(Calendar.HOUR_OF_DAY);
+		int day = c.get(Calendar.DAY_OF_YEAR) ;
+		int wynik = (hours * 60 ) + min;
+		int minuty;
         if ((day >= 118 && day <= 126) || (day >= 152 && day <= 259)) //28 kwietnia do 6 maja i od 1 czerwca do 16 wrzeœnia
         {
         	//MOST OTWARTY DLA RUCHU WODNEGO 
@@ -264,16 +280,24 @@ public class Wodna extends Activity {
 		return true;
 	}
 	
+    @Override
+	protected void onPause() {
+		super.onPause();
+		
+		unregisterReceiver(mBroadcastReceiver);
+	}
+    
 	//prze³¹czanie Activity 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case R.id.item1w:
             Intent intent = new Intent(this, MainActivity.class);
-            this.startActivity(intent);
+            startActivity(intent);
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("activityName", "MainActivity");
+            editor.commit();
             finish();
             break;
         case R.id.item2w:
