@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Most obrotowy w Giżycku</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_wodna">Ruch wodny</string>
+    <string name="title_activity_about">O programie</string>
+    <string name="licencja">&lt;a href="http://www.eclipse.org/legal/cpl-v10.html">Ten program wydany został na licencji Common Public License v1.0&lt;/a></string>
+
+</resources>
