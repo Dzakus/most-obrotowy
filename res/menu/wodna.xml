@@ -1,6 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/item1w" android:title="Przełącz na tryb kołowy"></item>
-    <item android:id="@+id/item2w" android:title="Zadzwoń do MOPR"></item>
-    <item android:id="@+id/item3w" android:title="O programie"></item>
+
+    <item
+        android:id="@+id/mopr"
+        android:title="@string/call_for_mopr">
+    </item>
 
 </menu>
