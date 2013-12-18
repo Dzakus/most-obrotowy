@@ -2,18 +2,12 @@
 <resources>
 
     <string name="app_name">Most obrotowy w Giżycku</string>
-    <string name="title_activity_ziemny">Ruch ziemny</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
     <string name="title_activity_wodna">Ruch wodny</string>
     <string name="title_activity_about">O programie</string>
     <string name="licencja">&lt;a href="http://www.eclipse.org/legal/cpl-v10.html">Ten program wydany został na licencji Common Public License v1.0&lt;/a></string>
-    <string name="dlg_first_start_title">UWAGA!!!</string>
-    <string name="dlg_first_start">Ta aplikacja zawiera również tryb wodny. Aktywować go można poprzez klawisz \'menu\'. W trybie wodnym można również szybko zadzwonić do giżyckiej bazy MOPR! Aplikacja działa statycznie na podstawie godzin, więc nie odpowiadam za dróżnika. Maciej Czajkowski</string>
-    <string name="dlg_first_start_positive">OK, rozumiem</string>
-    <string name="dlg_mopr">Czy na pewno chcesz zadzownić na MOPR?</string>
-    <string name="dont_display_again">Nie pokazuj ponownie</string>
-    <string name="call_for_mopr">Zadzwoń do MOPR</string>
-    <string name="change_mode">Przełącz tryb</string>
-    <string name="about">O programie</string>
-    <string name="about_text">Aplikacja ma ułatwiać sprawdzenie rozkładu mostu obrotowego w Giżycku. Program pisałem pod siebie jako ułatwienie w jeździe rowerem i dojazdach do pracy. Apka automatycznie rozpoznaje datę i dobiera odpowiedni rozkład. \n\n Jak ktoś chce dokonać DOBROWOLNEJ dotacji, podaję dane: \n\n Maciej Czajkowski \n11-500 Giżycko\n81 2490 1044 0000 4200 3213 9522</string>
+    <string name="appwidget_text">test widgetu</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

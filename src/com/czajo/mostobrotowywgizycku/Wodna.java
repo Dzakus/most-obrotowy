@@ -2,283 +2,374 @@ package com.czajo.mostobrotowywgizycku;
 
 import java.util.Calendar;
 
+import android.net.Uri;
+import android.os.Bundle;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
-public class Wodna extends myActivity {
+public class Wodna extends Activity {
+        
+        private TextView czas, stan, miesiac;
 
-	private static final int DLG_MOPR = DLG_FIRST_START+1;
 
-	public void updateView() {
-		Calendar c = Calendar.getInstance();
-		int min = c.get(Calendar.MINUTE);
-		int hours = c.get(Calendar.HOUR_OF_DAY);
-		int day = c.get(Calendar.DAY_OF_YEAR);
-		int wynik = (hours * 60) + min;
-		int minuty;
-		// 28 kwietnia do 6 maja i od 1 czerwca do 16 wrzeœnia
-		if ((day >= 118 && day <= 126) || (day >= 152 && day <= 259))
+        public static final String PREFS_NAME = "MyPrefsFile1";
+        public CheckBox dontShowAgain;
+        BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
-		{
-			// MOST OTWARTY DLA RUCHU WODNEGO
-			if (hours == 0 || hours == 1 || hours == 2 || hours == 3
-					|| hours == 4 || hours == 5 || hours == 6 || hours == 7) {
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-			}
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals(Intent.ACTION_TIME_TICK)) {
+                                updateView();
+                        }
+                }
+        };
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_wodna);
+                
+                czas = (TextView) findViewById(R.id.czas);
+        stan = (TextView) findViewById(R.id.stan);
+        
+        /*SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        String activityname = settings.getString("activityName", "Wodna");
+        if (activityname.equals("Wodna"))
+        {
+                Intent intent = new Intent(this, Wodna.class);
+            this.startActivity(intent);
+            finish();
+        }
+        if (activityname.equals("MainActivity"))
+        {
+                Intent intent = new Intent(this, MainActivity.class);
+            this.startActivity(intent);
+            finish();
+        }*/
+        
+        //rozpoznawanie daty 
+        
+        //miesiac = (TextView) findViewById(R.id.miesiac);        
+        //miesiac.setText(String.valueOf(day));
+        updateView();
+        }
+        
+        public void updateView(){
+                Calendar c = Calendar.getInstance(); 
+                int min = c.get(Calendar.MINUTE);
+                int hours = c.get(Calendar.HOUR_OF_DAY);
+                int day = c.get(Calendar.DAY_OF_YEAR) ;
+                int wynik = (hours * 60 ) + min;
+                int minuty;
+        if ((day >= 118 && day <= 126) || (day >= 152 && day <= 259)) //28 kwietnia do 6 maja i od 1 czerwca do 16 wrzeÅ“nia
+        {
+                //MOST OTWARTY DLA RUCHU WODNEGO 
+            if (hours == 0 || hours == 1 || hours == 2 || hours == 3 || hours == 4 || hours == 5 || hours == 6 || hours == 7)
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+            }
+            
+            if (wynik >= 490 && wynik <= 510) //8.10 - 8.30
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 510 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 635 && wynik <= 660) // 10.35 - 11.00
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 660 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 750 && wynik <= 780) // 12.30 - 13.00 
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 780 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 825 && wynik <= 885) // 13.45 - 14.45 
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 885 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 950 && wynik <= 1040) // 15.50 - 17.20 
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 1040 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 1110 && wynik <= 1140) // 18.30 - 19.00
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 1140 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+                         
+          //MOST ZAMKNIÄ˜TY DLA RUCHU WODNEGO
+            if (wynik >= 511 && wynik <= 634) //8.31 - 10.34
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 634 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 661 && wynik <= 749) //11.01 - 12.29
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 749 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 781 && wynik <= 824) //13.01 - 13.44
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 824 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >=886 && wynik <= 949) //14.46 - 15.49
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 949 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 1041 && wynik <= 1109) //17.21 - 18.29
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 1109 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 1141) //19.01
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
 
-			if (wynik >= 490 && wynik <= 510) // 8.10 - 8.30
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 510 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+            } 
+        }
+        
+        if ((day >= 91 && day <= 117) || (day >= 127 && day <= 151) || (day >= 260 && day <= 304)) // 1 do 27 kwietnia, od 7 do 31 maja oraz od 17 wrzeÅ“nia do 31 paÅ¸dziernika
+        {
+                //MOST OTWARTY DLA RUCHU WODNEGO
+            if (hours == 0 || hours == 1 || hours == 2 || hours == 3 || hours == 4 || hours == 5 || hours == 6 || hours == 7 || hours == 8 || hours == 9)
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+            }           
+            
+            if (wynik >= 635 && wynik <= 660) // 10.35 - 11.00
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 660 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 750 && wynik <= 780) // 12.30 - 13.00 
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 780 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 825 && wynik <= 885) // 13.45 - 14.45 
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 885 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            }
+            
+            if (wynik >= 950) // 15.50 - 17.20 
+            {
+                    czas.setTextColor(Color.GREEN);
+                    czas.setText("OTWARTY");
+                    minuty = 1040 - wynik;
+            }
+            
+                         
+          //MOST ZAMKNIÄ˜TY DLA RUCHU WODNEGO
+            if (wynik >= 511 && wynik <= 634) //8.31 - 10.34
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 634 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 661 && wynik <= 749) //11.01 - 12.29
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 749 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 781 && wynik <= 824) //13.01 - 13.44
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 824 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >=886 && wynik <= 949) //14.46 - 15.49
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 949 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 1041 && wynik <= 1109) //17.21 - 18.29
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
+                    minuty = 1109 - wynik;
+                    stan.setText("Jeszcze przez " + minuty + " minut(-y)");
+            } 
+            
+            if (wynik >= 1141) //19.01
+            {
+                    czas.setTextColor(Color.RED);
+                    czas.setText("ZAMKNIÄ˜TY");
 
-			if (wynik >= 635 && wynik <= 660) // 10.35 - 11.00
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 660 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+            }
+        }
+        if (day >= 305 || (day >= 1 && day <= 90))
+        {
+                czas.setTextColor(Color.YELLOW);
+                czas.setText("ÅšPI");
+                stan.setText("snem zimowym do maja ;-)");
+        }
+        
+        //koniec rozpoznawania daty
+        }
+        
+        //pokazywanie alertboxa przy pierwszym uruchomieniu aplikacji
+        @Override
+        protected void onResume() {
+                IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
+                registerReceiver(mBroadcastReceiver, filter);
+                
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            LayoutInflater adbInflater = LayoutInflater.from(this);
+            View eulaLayout = adbInflater.inflate(R.layout.checkbox, null);
+            dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.skip);
+            adb.setView(eulaLayout);
+            adb.setTitle("UWAGA!!!");
+            adb.setMessage(Html.fromHtml("Ta aplikacja zawiera rÃ³wnieÅ¼ tryb wodny. AktywowaÄ‡ go moÅ¼na poprzez klawisz 'menu'. W trybie wodnym moÅ¼na rÃ³wnieÅ¼ szybko zadzwoniÄ‡ do giÅ¼yckiej bazy MOPR! Aplikacja dziaÅ‚a statycznie na podstawie godzin, wiÄ™c nie odpowiadam za drÃ³Å¼nika. Maciej Czajkowski"));
+            adb.setPositiveButton("OK, rozumiem", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    String checkBoxResult = "NOT checked";
+                    if (dontShowAgain.isChecked())
+                        checkBoxResult = "checked";
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.commit();              
+                    return;
+                }
+            });
 
-			if (wynik >= 750 && wynik <= 780) // 12.30 - 13.00
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 780 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
 
-			if (wynik >= 825 && wynik <= 885) // 13.45 - 14.45
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 885 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            String skipMessage = settings.getString("skipMessage", "NOT checked");
+            if (!skipMessage.equals("checked"))
+                adb.show();
 
-			if (wynik >= 950 && wynik <= 1040) // 15.50 - 17.20
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 1040 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+            super.onResume();
+        }
+      //koniec kodu alertboxa
 
-			if (wynik >= 1110 && wynik <= 1140) // 18.30 - 19.00
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 1140 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+                // Inflate the menu; this adds items to the action bar if it is present.
+                getMenuInflater().inflate(R.menu.wodna, menu);
+                return true;
+        }
+        
+    @Override
+        protected void onPause() {
+                super.onPause();
+                
+                unregisterReceiver(mBroadcastReceiver);
+        }
+    
+        //przeÅ‚Ä…czanie Activity 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.id.item1w:
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("activityName", "MainActivity");
+            editor.commit();
+            finish();
+            break;
+        case R.id.item2w:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder
+                .setTitle("ZadzwoÅ„ do MOPR")
+                .setMessage("Czy na pewno chcesz to zrobiÄ‡?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("TAK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {                                                                 
+                            Uri number = Uri.parse("tel:984");
+                        Intent dial = new Intent(Intent.ACTION_CALL, number);
+                        startActivity(dial);
+                    }
+                })
+                .setNegativeButton("NIE", null)                                                //Do nothing on no
+                .show();
+                
+            break;
+        case R.id.item3w:
+            Intent about = new Intent(this, About.class);
+            this.startActivity(about);
+            break;
 
-			// MOST ZAMKNIÊTY DLA RUCHU WODNEGO
-			if (wynik >= 511 && wynik <= 634) // 8.31 - 10.34
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 634 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+        default:
+            return super.onOptionsItemSelected(item);
+        }
 
-			if (wynik >= 661 && wynik <= 749) // 11.01 - 12.29
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 749 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
+        return true;
+    }
 
-			if (wynik >= 781 && wynik <= 824) // 13.01 - 13.44
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 824 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 886 && wynik <= 949) // 14.46 - 15.49
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 949 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 1041 && wynik <= 1109) // 17.21 - 18.29
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 1109 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 1141) // 19.01
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-
-			}
-		}
-		// 1 do 27 kwietnia, od 7 do 31 maja oraz od 17 wrzeœnia do 31 paŸdziernika
-		if ((day >= 91 && day <= 117) || (day >= 127 && day <= 151)
-				|| (day >= 260 && day <= 304)) {
-			// MOST OTWARTY DLA RUCHU WODNEGO
-			if (hours == 0 || hours == 1 || hours == 2 || hours == 3
-					|| hours == 4 || hours == 5 || hours == 6 || hours == 7
-					|| hours == 8 || hours == 9) {
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-			}
-
-			if (wynik >= 635 && wynik <= 660) // 10.35 - 11.00
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 660 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 750 && wynik <= 780) // 12.30 - 13.00
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 780 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 825 && wynik <= 885) // 13.45 - 14.45
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 885 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 950) // 15.50 - 17.20
-			{
-				czas.setTextColor(Color.GREEN);
-				czas.setText("OTWARTY");
-				minuty = 1040 - wynik;
-			}
-
-			// MOST ZAMKNIÊTY DLA RUCHU WODNEGO
-			if (wynik >= 511 && wynik <= 634) // 8.31 - 10.34
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 634 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 661 && wynik <= 749) // 11.01 - 12.29
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 749 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 781 && wynik <= 824) // 13.01 - 13.44
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 824 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 886 && wynik <= 949) // 14.46 - 15.49
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 949 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 1041 && wynik <= 1109) // 17.21 - 18.29
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-				minuty = 1109 - wynik;
-				stan.setText("Jeszcze przez " + minuty + " minut(-y)");
-			}
-
-			if (wynik >= 1141) // 19.01
-			{
-				czas.setTextColor(Color.RED);
-				czas.setText("ZAMKNIÊTY");
-
-			}
-		}
-		if (day >= 305 || (day >= 1 && day <= 90)) {
-			czas.setTextColor(Color.YELLOW);
-			czas.setText("ŒPI");
-			stan.setText("snem zimowym do maja ;-)");
-		}
-
-		// koniec rozpoznawania daty
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.wodna, menu);
-		return true;
-	}
-
-	// prze³¹czanie Activity
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.change:
-			mPref.edit().putInt(PREF_LAYOUT, LAYOUT_ZIEMIA).commit();
-			Intent intent = new Intent(this, Ziemia.class);
-			startActivity(intent);
-			finish();
-			break;
-		case R.id.mopr:
-			showDialog(DLG_MOPR);
-
-			break;
-
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-
-		return true;
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DLG_MOPR:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(R.string.dlg_mopr);
-			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setPositiveButton(android.R.string.yes,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							Uri number = Uri.parse("tel:984");
-							Intent dial = new Intent(Intent.ACTION_CALL, number);
-							startActivity(dial);
-						}
-					});
-			builder.setNegativeButton(android.R.string.no, null);
-			return builder.create();
-		}
-
-		return super.onCreateDialog(id);
-
-	}
 
 }

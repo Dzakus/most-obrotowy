@@ -1,13 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item
-        android:id="@+id/change"
-        android:title="@string/change_mode">
-    </item>
-    <item
-        android:id="@+id/about"
-        android:orderInCategory="100"
-        android:title="@string/about">
-    </item>
+    <item android:id="@+id/item1" android:title="Przełącz na tryb wodny"></item>
+    <item android:id="@+id/item2" android:title="O programie" android:orderInCategory="100"></item>
 
 </menu>
